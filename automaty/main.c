@@ -1,0 +1,78 @@
+#include "led.h"
+#include "keyboard.h"
+
+enum LedState eLedState = STOP;
+unsigned char ucBlinkCounter=0;
+unsigned char ucLedState=0;
+unsigned char ucLedCounter=0;
+
+void Delay(int iDelayInMS){ 
+ 
+ int iLoopCounter; 
+  
+ iDelayInMS=iDelayInMS*12000; 
+  
+ for(iLoopCounter=0; iLoopCounter< iDelayInMS; iLoopCounter++) 
+ { 
+   
+ } 
+} 
+
+int main(void){
+	
+	LedInit();
+	eKeyboardRead();
+
+	while(1){
+		
+		switch(eLedState){
+				case MOVE_RIGHT:
+						if((eKeyboardRead()== BUTTON_1)){
+								eLedState=STOP;}
+						else if((eKeyboardRead()== BUTTON_3)){
+							 eLedState=BLINK;
+						}else{
+								LedStepRight();
+						}
+						break;	
+					
+				case MOVE_LEFT:
+						if((eKeyboardRead()== BUTTON_1)){
+							 eLedState=STOP;
+						}else{
+							 LedStepLeft();
+						}
+						break;
+					
+				case STOP:
+						if((eKeyboardRead() == BUTTON_0)){
+							 eLedState=MOVE_LEFT;
+						}else if((eKeyboardRead() == BUTTON_2)){
+							 eLedState=MOVE_RIGHT;
+						}
+						break;
+						
+				case BLINK:
+						if (ucBlinkCounter==7){
+							ucBlinkCounter=0;
+							eLedState = MOVE_LEFT;
+						}
+						else{
+							ucBlinkCounter++;
+							if(ucLedCounter==0){
+								ucLedCounter =1;
+								LedOn(0);
+							}
+							else if(ucLedCounter==1){
+								ucLedCounter=0;
+								LedOn(4);}
+							}
+							default:
+								break;
+			}
+			Delay(100);
+	}
+}
+
+
+
